@@ -114,7 +114,7 @@
 </script>
 
 <div class="grid w-full h-full place-items-center">
-    <div class="px-20 py-8 border border-slate-400/20 rounded">
+    <div class="px-20 py-8 border border-slate-400/40 rounded">
         <h1 class="text-slate-600 text-3xl font-semibold text-center">Register</h1>
         <form use:enhance={()=>{
             loading = true;
@@ -153,7 +153,7 @@
             }
         }} method="POST">
             <fieldset class="relative mt-8 flex items-center gap-2">
-                <input on:change={validateName} bind:this={name} placeholder=" " type="text" name="name" id="name" class="p-2 w-full bg-transparent border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/20 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer">
+                <input on:change={validateName} bind:this={name} placeholder=" " type="text" name="name" id="name" class="p-2 w-full bg-transparent border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/40 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer">
                 <label for="name" class="absolute pointer-events-none duration-100 peer-invalid:text-red-500 motion-reduce:duration-0 text-slate-400 -top-3 left-1 peer-focus:-top-3 peer-focus:left-1 bg-slate-200 rounded-full px-1 peer-focus:text-sky-500 py-0 h-5 peer-placeholder-shown:top-2 peer-placeholder-shown:text-slate-400 peer-placeholder-shown:left-3">Full name</label>
                 <div class="hidden peer-invalid:block text-red-500 relative">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 peer">
@@ -168,7 +168,7 @@
                 </div>
             </fieldset>
             <fieldset class="relative mt-3 flex items-center gap-2">
-                <input on:input={validateEmail} bind:this={email} placeholder=" " type="email" name="email" id="email" class="p-2 w-full bg-transparent border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/20 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer">
+                <input on:input={validateEmail} bind:this={email} placeholder=" " type="email" name="email" id="email" class="p-2 w-full bg-transparent border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/40 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer">
                 <label for="email" class="absolute pointer-events-none duration-100 peer-invalid:text-red-500 motion-reduce:duration-0 text-slate-400 -top-3 left-1 peer-focus:-top-3 peer-focus:left-1 bg-slate-200 rounded-full px-1 peer-focus:text-sky-500 py-0 h-5 peer-placeholder-shown:top-2 peer-placeholder-shown:text-slate-400 peer-placeholder-shown:left-3">E-Mail</label>
                 <div class="hidden peer-invalid:block text-red-500 relative">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 peer">
@@ -183,7 +183,7 @@
                 </div>
             </fieldset>
             <fieldset class="relative mt-3 flex items-center gap-2">
-                <input on:change={validatePasswordConfirm} on:input={validatePassword} on:focusin={expandHint} on:focusout={hideHint} bind:this={password} placeholder=" " type="password" name="password" id="password" class="p-2 bg-transparent w-full border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/20 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer">
+                <input on:change={validatePasswordConfirm} on:input={validatePassword} on:focusin={expandHint} on:focusout={hideHint} bind:this={password} placeholder=" " type="password" name="password" id="password" class="p-2 bg-transparent w-full border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/40 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer">
                 <label for="password" class="absolute pointer-events-none duration-100 peer-invalid:text-red-500 motion-reduce:duration-0 text-slate-400 -top-3 left-1 peer-focus:-top-3 peer-focus:left-1 bg-slate-200 rounded-full px-1 peer-focus:text-sky-500 py-0 h-5 peer-placeholder-shown:top-2 peer-placeholder-shown:text-slate-400 peer-placeholder-shown:left-3">Password</label>
                 <div class="hidden peer-invalid:block text-red-500 relative">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 peer">
@@ -252,7 +252,7 @@
                 </p>
             </div>
             <fieldset class="relative mt-3 flex items-center gap-2">
-                <input on:input={validatePasswordConfirm} on:change={validatePasswordConfirm} bind:this={passwordConfirm} placeholder=" " type="password" name="passwordConfirm" id="passwordConfirm" class="p-2 w-full bg-transparent border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/20 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer">
+                <input on:input={validatePasswordConfirm} on:change={validatePasswordConfirm} bind:this={passwordConfirm} placeholder=" " type="password" name="passwordConfirm" id="passwordConfirm" class="p-2 w-full bg-transparent border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/40 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer">
                 <label for="passwordConfirm" class="absolute pointer-events-none duration-100 peer-invalid:text-red-500 motion-reduce:duration-0 text-slate-400 -top-3 left-1 peer-focus:-top-3 peer-focus:left-1 bg-slate-200 rounded-full px-1 peer-focus:text-sky-500 py-0 h-5 peer-placeholder-shown:top-2 peer-placeholder-shown:text-slate-400 peer-placeholder-shown:left-3">Confirm Password</label>
                 <div class="hidden peer-invalid:block text-red-500 relative">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 peer">

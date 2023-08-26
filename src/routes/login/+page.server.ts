@@ -36,5 +36,5 @@ export const actions: import('./$types').Actions = {
 
 /** @type {import('./$types').LayoutServerLoad} */
 export function load() {
-    console.log("e");
+    if(pb.authStore.isValid) throw redirect(302, "/");
   }

@@ -1,5 +1,5 @@
 import { TURNSTILE_SECRET } from '$env/static/private';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import {pb} from "$lib/pocketbase";
 
 /** @type {import('./$types').Actions} */
@@ -46,3 +46,8 @@ export const actions = {
         return {success: true};
     }
 }
+
+/** @type {import('./$types').LayoutServerLoad} */
+export function load() {
+    if(pb.authStore.isValid) throw redirect(302, "/");
+  }

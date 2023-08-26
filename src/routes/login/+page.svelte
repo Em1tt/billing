@@ -30,7 +30,7 @@
 </script>
 
 <div class="grid w-full h-full place-items-center">
-	<div class="px-20 py-8 border border-slate-400/20 rounded">
+	<div class="px-20 py-8 border border-slate-400/40 rounded">
 		<h1 class="text-slate-600 text-3xl font-semibold text-center">Login</h1>
 		<form
 			use:enhance={() => {
@@ -73,7 +73,7 @@
 					type="email"
 					name="email"
 					id="email"
-					class="p-2 w-full bg-transparent border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/20 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer"
+					class="p-2 w-full bg-transparent border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/40 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer"
 				/>
 				<label
 					for="email"
@@ -115,7 +115,7 @@
 					type="password"
 					name="password"
 					id="password"
-					class="p-2 bg-transparent w-full border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/20 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer"
+					class="p-2 bg-transparent w-full border border-slate-400 invalid:border-red-500 invalid:text-red-500 placeholder-shown:border-slate-400/40 rounded focus:border-sky-500 outline-none text-slate-600 focus:text-sky-500 peer"
 				/>
 				<label
 					for="password"
