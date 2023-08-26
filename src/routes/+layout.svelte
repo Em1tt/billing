@@ -4,7 +4,7 @@
 </script>
 <div class="h-screen bg-slate-200">
     <Navbar/>
-    <div class="max-w-7xl mx-auto h-screen py-14">
+    <div class="max-w-7xl mx-auto h-screen py-14 px-10">
         <slot />
     </div>
 </div>

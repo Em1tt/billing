@@ -5,7 +5,7 @@
 </script>
 
 <div class="border-b border-b-slate-400/40 bg-slate-200 fixed top-0 left-0 w-screen px-2 py-0.5">
-	<div class="max-w-7xl mx-auto flex justify-between gap-4">
+	<div class="max-w-7xl px-10 mx-auto flex justify-between gap-4">
 		<div class="w-64">
 			<a href="/" class="flex flex-row items-center text-slate-700 w-fit">
 				<img src="/AmetrineSmall.webp" alt="logo" />
@@ -30,7 +30,7 @@
 					<Dropdown text="Support">
 						<ul class="leading-loose">
 							<li>
-								<a href="/" class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2"
+								<a href="/tickets" class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2"
 									>View tickets</a
 								>
 							</li>
