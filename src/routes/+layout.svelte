@@ -1,6 +1,10 @@
 <script>
     import Navbar from "$lib/Navbar.svelte";
     import "../app.css";
+    import { pb } from "$lib/pocketbase";
+    if(!pb.authStore.isValid){
+        pb.authStore.clear();
+    }
 </script>
 <div class="h-screen bg-slate-200">
     <Navbar/>
