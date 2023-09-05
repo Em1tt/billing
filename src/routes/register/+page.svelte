@@ -281,6 +281,11 @@
                 <p class="text-center text-red-500">{turnstileMessage}</p>
             {/if}
             <Turnstile siteKey="0x4AAAAAAAJRELri_iqccqJu" size="invisible" bind:reset/>
+            <hr class="h-0.5 mt-2 bg-slate-400/40">
+			<p class="text-slate-500 text-center mt-2">
+				Already have an account?<br>
+				<a href="/login" class="text-sky-500 hover:text-sky-700">Login now</a>
+			</p>
         </form>
     </div>
 </div>
