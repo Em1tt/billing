@@ -34,8 +34,17 @@
 	"type": "module",
 	"dependencies": {
 		"@tiptap/core": "^2.1.7",
+		"@tiptap/extension-blockquote": "^2.1.8",
+		"@tiptap/extension-bullet-list": "^2.1.8",
+		"@tiptap/extension-character-count": "^2.1.8",
+		"@tiptap/extension-code-block-lowlight": "^2.1.8",
+		"@tiptap/extension-link": "^2.1.8",
+		"@tiptap/extension-list-item": "^2.1.8",
+		"@tiptap/extension-underline": "^2.1.8",
 		"@tiptap/pm": "^2.1.7",
 		"@tiptap/starter-kit": "^2.1.7",
+		"highlight.js": "^11.8.0",
+		"lowlight": "^3.0.0",
 		"pocketbase": "^0.16.0"
 	}
 }
