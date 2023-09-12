@@ -6,6 +6,9 @@ declare global {
 		interface Locals {
 			currentUser: Writable<Record | Admin | null>
 		}
+		interface LayoutData{
+			isValid: boolean
+		}
 		// interface PageData {}
 		// interface Platform {}
 	}

@@ -5,5 +5,11 @@ import { pb } from '$lib/pocketbase';
 export function load() {
     if(!pb.authStore.isValid){
         pb.authStore.clear();
+        return {
+            authValid: false
+        };
     }
+    return {
+        authValid: true
+    };
   }

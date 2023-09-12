@@ -1,7 +1,6 @@
 import { TURNSTILE_SECRET } from '$env/static/private';
 import { fail, redirect } from '@sveltejs/kit';
-import { currentUser, pb } from '$lib/pocketbase';
-import { get } from "svelte/store";
+import { pb } from '$lib/pocketbase';
 export const actions: import('./$types').Actions = {
     default: async ({request, getClientAddress}) => {
         const data = await request.formData();
@@ -24,7 +23,7 @@ export const actions: import('./$types').Actions = {
         if(!outcome.success) return fail(400, { turnstileData: { incorrect: true, message: "CAPTCHA failed! Please refresh this page."} });
         
         try{
-            const user = await pb.collection("users").authWithPassword(email, password);
+            const user = pb.collection("users").authWithPassword(email, password);
             console.log(user);
         }catch(e: unknown){
             console.log(e);

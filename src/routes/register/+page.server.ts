@@ -41,8 +41,6 @@ export const actions = {
             const emailError = e?.response?.data?.email;
             if(emailError) return fail(400, { emailData : { incorrect: true, message: "E-Mail is already in use." } });
         }
-        await pb.collection("users").authWithPassword(email, password);
-
         return {success: true};
     }
 }
