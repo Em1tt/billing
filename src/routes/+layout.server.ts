@@ -1,15 +1,26 @@
+import { serializeNonPOJOs } from '$lib/helpers.js';
+
 export const ssr = true;
-import { pb } from '$lib/pocketbase';
 
 /** @type {import('./$types').LayoutServerLoad} */
-export function load() {
-    if(!pb.authStore.isValid){
-        pb.authStore.clear();
+export async function load({ locals }) {
+    try{
+        if(locals.pb.authStore.isValid){
+            try{
+            await locals.pb.collection("users").authRefresh();
+            }catch(e){
+                locals.pb.authStore.clear();
+            }
+        }
+    }catch(e){
+        console.log(e);
+    };
+    if (locals.user){
         return {
-            authValid: false
-        };
+            user: serializeNonPOJOs(locals.user)
+        }
     }
     return {
-        authValid: true
+        user: null
     };
   }

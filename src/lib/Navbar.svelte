@@ -1,7 +1,7 @@
 <script>
 	import { applyAction, enhance } from '$app/forms';
 	import Dropdown from './Dropdown.svelte';
-	import { currentUser, pb } from './pocketbase';
+	//import { currentUser, pb } from './pocketbase';
 </script>
 
 <div class="border-b border-b-slate-400/40 bg-slate-200 fixed top-0 left-0 w-screen px-2 py-0.5">
@@ -54,6 +54,7 @@
 		</nav>
 		<div class="w-64 flex items-center">
 			<ul class="text-slate-600 relative">
+				<!--
 				{#if $currentUser}
 					<li>
 						<Dropdown text="Profile">
@@ -95,6 +96,7 @@
 						</Dropdown>
 					</li>
 				{/if}
+				-->
 			</ul>
 		</div>
 	</div>

@@ -1,8 +1,7 @@
 import { TURNSTILE_SECRET } from '$env/static/private';
 import { fail, redirect } from '@sveltejs/kit';
-import { pb } from '$lib/pocketbase';
 export const actions: import('./$types').Actions = {
-    default: async ({request, getClientAddress}) => {
+    default: async ({request, getClientAddress, locals}) => {
         const data = await request.formData();
         const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
         const email = data.get("email")?.toString();
@@ -23,8 +22,7 @@ export const actions: import('./$types').Actions = {
         if(!outcome.success) return fail(400, { turnstileData: { incorrect: true, message: "CAPTCHA failed! Please refresh this page."} });
         
         try{
-            const user = pb.collection("users").authWithPassword(email, password);
-            console.log(user);
+            await locals.pb.collection("users").authWithPassword(email, password);
         }catch(e: unknown){
             console.log(e);
             return fail(400, { emailData : { incorrect: true, message: "E-Mail doesn't exist or password incorrect." } });
@@ -35,5 +33,5 @@ export const actions: import('./$types').Actions = {
 
 /** @type {import('./$types').LayoutServerLoad} */
 export function load() {
-    if(pb.authStore.isValid) throw redirect(302, "/");
+    //if(pb.authStore.isValid) throw redirect(302, "/");
   }

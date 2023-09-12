@@ -1,6 +1,5 @@
 import { TURNSTILE_SECRET } from '$env/static/private';
 import { fail, redirect } from '@sveltejs/kit';
-import {pb} from "$lib/pocketbase";
 
 /** @type {import('./$types').Actions} */
 export const actions = {
@@ -29,13 +28,13 @@ export const actions = {
         const outcome = await result.json();
         if(!outcome.success) return fail(400, { turnstileData: { incorrect: true, message: "CAPTCHA failed! Please refresh this page."} });
         try{
-            await pb.collection("users").create({
+            /*await pb.collection("users").create({
                 email,
                 name,
                 password,
                 passwordConfirm,
                 pid: 0
-            });
+            });*/
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }catch(e: any){
             const emailError = e?.response?.data?.email;
@@ -47,5 +46,5 @@ export const actions = {
 
 /** @type {import('./$types').LayoutServerLoad} */
 export function load() {
-    if(pb.authStore.isValid) throw redirect(302, "/");
+    //if(pb.authStore.isValid) throw redirect(302, "/");
   }

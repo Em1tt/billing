@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { applyAction, enhance } from "$app/forms";
-	import { currentUser, pb } from "$lib/pocketbase";
+	export let data: App.Locals;
+  console.log(data);
 </script>
 
-{#if $currentUser}
+{#if data.user}
 <p>
-  Signed in as {$currentUser.username} 
+  Signed in as {data.user.username} 
 </p>
   <form action="/logout" method="POST" use:enhance={() => {
     return async ({ result }) => {
       await applyAction(result);
-      pb.authStore.clear();
     };
   }}>
     <button type="submit">Sign Out</button>

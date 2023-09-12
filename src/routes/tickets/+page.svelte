@@ -3,7 +3,7 @@
 	import Checkbox from '$lib/Checkbox.svelte';
 	import { onDestroy, onMount } from 'svelte';
 	import { applyAction, enhance } from '$app/forms';
-	import { pb } from '$lib/pocketbase';
+	//import { pb } from '$lib/pocketbase';
 	import type { Record, UnsubscribeFunc } from 'pocketbase';
 	import type { MouseEventHandler } from 'svelte/elements';
 	import { goto } from '$app/navigation';
@@ -22,20 +22,20 @@
   let finishedSearching: boolean = false;
 
 	onMount(async () => {
-		tickets = (await pb.collection('tickets').getList(0, 20)).items.sort((a, b) => {
+		/*tickets = (await pb.collection('tickets').getList(0, 20)).items.sort((a, b) => {
 			let filter = $page.url.searchParams.get('filter');
 			if (!filter) return 0;
 			let modFilter = filter?.split('-').filter((i) => i != '')[0];
 			if (a[modFilter] < b[modFilter]) return filter.startsWith('-') ? -1 : 1;
 			return filter.startsWith('-') ? 1 : -1;
-		});
+		});*/
 
     finishedSearching = true;
 
 		mapCheckboxes();
 
     console.log(tickets);
-
+		/*
 		unsubscribe = pb.collection('tickets').subscribe('*', (data) => {
 			if (data.action == 'create') {
 				tickets = tickets.filter((t) => t.id != data.record.id);
@@ -72,6 +72,7 @@
 				displayShadow = tableWrapper.scrollWidth > tableWrapper.clientWidth;
 			};
 		}
+		*/
 	});
 
 	onDestroy(async () => {
@@ -106,7 +107,7 @@
 	async function deleteSelected() {
 		const toDelete = checkboxes.filter((i) => i.checked).map((i) => i.id);
 		for (let i = 0; i < toDelete.length; i++) {
-			await pb.collection('tickets').delete(toDelete[i]);
+			//await pb.collection('tickets').delete(toDelete[i]);
 			checkboxes = checkboxes.filter((p) => p.id != toDelete[i]);
 		}
 		deleteAction = false;

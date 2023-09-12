@@ -2,7 +2,6 @@
 	import { applyAction, enhance } from "$app/forms";
 	import { goto } from "$app/navigation";
 	import { page } from "$app/stores";
-	import { pb, currentUser } from "$lib/pocketbase";
 	import { onMount } from "svelte";
     import { Turnstile } from 'svelte-turnstile';
 
@@ -102,9 +101,9 @@
     };
 
     onMount(async()=>{
-        if($currentUser){
+        /*if($currentUser){
             goto("/");
-        }
+        }*/
         hintHeight = passwordHint.scrollHeight + 16;
     });
 
@@ -144,7 +143,7 @@
                 loading = false;
                 if($page.form.success){
                 try{
-                    await pb.collection('users').authWithPassword(email.value, password.value);
+                    //await pb.collection('users').authWithPassword(email.value, password.value);
                     await goto("/");
                 }catch(e){
                     console.log(e);        

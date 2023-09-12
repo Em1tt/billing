@@ -2,7 +2,6 @@
 	import { applyAction, enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { pb } from '$lib/pocketbase';
 	import { Turnstile } from 'svelte-turnstile';
 	let email: HTMLInputElement;
 	let emailMessage: string = 'Please enter a valid e-mail address.';
@@ -55,7 +54,6 @@
 					loading = false;
 					if ($page.form.success) {
 						try {
-							await pb.collection('users').authWithPassword(email.value, password.value);
 							await goto('/');
 						} catch (e) {
 							console.log(e);
