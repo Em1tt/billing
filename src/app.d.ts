@@ -5,6 +5,7 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
+			authExpired: boolean, //True when token was invalidated on request.
 			pb: PocketBase,
 			user: Record | Admin | null
 		}

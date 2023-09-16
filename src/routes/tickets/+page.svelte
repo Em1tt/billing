@@ -1,82 +1,41 @@
 <script lang="ts">
 	import Breadcrumbs from '$lib/Breadcrumbs.svelte';
 	import Checkbox from '$lib/Checkbox.svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { applyAction, enhance } from '$app/forms';
-	//import { pb } from '$lib/pocketbase';
-	import type { Record, UnsubscribeFunc } from 'pocketbase';
-	import type { MouseEventHandler } from 'svelte/elements';
-	import { goto } from '$app/navigation';
+	import { goto, invalidate, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { fly } from 'svelte/transition';
-
+	import type { Record, ListResult } from 'pocketbase';
+	import type { MouseEventHandler } from 'svelte/elements';
+	
 	let selectAll: boolean;
 	let checkboxes: Array<{ id: string; checked: boolean }> = [];
 
-  let displayShadow: boolean = false;
+	export let data;
+	const resultData: ListResult<Record> = data.tickets;
+	let tickets = resultData.items.sort((a, b) => {
+		let filter = $page.url.searchParams.get('filter');
+		if (!filter) return 0;
+		let modFilter = filter?.split('-').filter((i) => i != '')[0];
+		if (a[modFilter] < b[modFilter]) return filter.startsWith('-') ? -1 : 1;
+		return filter.startsWith('-') ? 1 : -1;
+	});
+
+	mapCheckboxes();
+
+  	let displayShadow: boolean = false;
 	let tableWrapper: HTMLElement;
 	let loadingTicket: boolean = false;
-	let tickets: Array<Record>;
-	let unsubscribe: Promise<UnsubscribeFunc>;
 	let deleteAction: boolean = false;
-  let finishedSearching: boolean = false;
+  	let finishedSearching: boolean = false;
 
 	onMount(async () => {
-		/*tickets = (await pb.collection('tickets').getList(0, 20)).items.sort((a, b) => {
-			let filter = $page.url.searchParams.get('filter');
-			if (!filter) return 0;
-			let modFilter = filter?.split('-').filter((i) => i != '')[0];
-			if (a[modFilter] < b[modFilter]) return filter.startsWith('-') ? -1 : 1;
-			return filter.startsWith('-') ? 1 : -1;
-		});*/
-
-    finishedSearching = true;
-
-		mapCheckboxes();
-
-    console.log(tickets);
-		/*
-		unsubscribe = pb.collection('tickets').subscribe('*', (data) => {
-			if (data.action == 'create') {
-				tickets = tickets.filter((t) => t.id != data.record.id);
-				tickets.push(data.record);
-				checkboxes = [];
-				mapCheckboxes();
-				tickets = tickets.sort((a, b) => {
-					let filter = $page.url.searchParams.get('filter');
-					if (!filter) return 0;
-					let modFilter = filter?.split('-').filter((i) => i != '')[0];
-					if (a[modFilter] < b[modFilter]) return filter.startsWith('-') ? -1 : 1;
-					return filter.startsWith('-') ? 1 : -1;
-				});
-			} else if (data.action == 'delete') {
-				tickets = tickets.filter((t) => t.id != data.record.id);
-				checkboxes = [];
-				mapCheckboxes();
-			} else if (data.action == 'update') {
-				tickets = tickets.filter((t) => t.id != data.record.id);
-				tickets.push(data.record);
-				checkboxes = [];
-				mapCheckboxes();
-				tickets = tickets.sort((a, b) => {
-					let filter = $page.url.searchParams.get('filter');
-					if (!filter) return 0;
-					let modFilter = filter?.split('-').filter((i) => i != '')[0];
-					if (a[modFilter] < b[modFilter]) return filter.startsWith('-') ? -1 : 1;
-					return filter.startsWith('-') ? 1 : -1;
-				});
-			}
-		});
 		if (window) {
 			window.onresize = () => {
 				displayShadow = tableWrapper.scrollWidth > tableWrapper.clientWidth;
 			};
 		}
-		*/
-	});
-
-	onDestroy(async () => {
-		(await unsubscribe)?.();
 	});
 
   async function redirectTicket(
@@ -105,7 +64,7 @@
 	}
 
 	async function deleteSelected() {
-		const toDelete = checkboxes.filter((i) => i.checked).map((i) => i.id);
+		const toDelete = checkboxes.filter((i) => i?.checked).map((i) => i.id);
 		for (let i = 0; i < toDelete.length; i++) {
 			//await pb.collection('tickets').delete(toDelete[i]);
 			checkboxes = checkboxes.filter((p) => p.id != toDelete[i]);
@@ -129,10 +88,10 @@
   function change() {
 		// TODO: Make this work without timeout
 		setTimeout(() => {
-			if (checkboxes.every((v) => v.checked === true)) {
+			if (checkboxes.every((v) => v?.checked === true)) {
 				selectAll = true;
 				deleteAction = true;
-			} else if (checkboxes.some((v) => v.checked === true)) {
+			} else if (checkboxes.some((v) => v?.checked === true)) {
 				selectAll = false;
 				deleteAction = true;
 			} else {
@@ -157,10 +116,12 @@
 		class="shadow fixed bottom-20 left-1/2 -translate-x-1/2 justify-between border border-slate-400/40 rounded-full w-96 flex items-center px-6 py-2"
 	>
 		<p class="text-slate-600">
-			Selected <b>{checkboxes.filter((t) => t.checked === true).length}</b>
-			ticket{checkboxes.filter((t) => t.checked === true).length > 1 ? 's' : ''}
+			Selected <b>{checkboxes.filter((t) => t?.checked === true).length}</b>
+			ticket{checkboxes.filter((t) => t?.checked === true).length > 1 ? 's' : ''}
 		</p>
 		<button
+			form="ticketSelect"
+			type="submit"
 			on:click={deleteSelected}
 			class="p-2 cursor-pointer text-red-600 duration-100 hover:bg-red-400/20 px-4 rounded"
 			>Delete selected</button
@@ -171,27 +132,6 @@
 <div class="flex justify-between">
 	<h1 class="text-3xl font-bold text-slate-700">Tickets</h1>
 	<div class="flex gap-6 items-center">
-		<div class="relative">
-			<div class="peer flex flex-row flex-nowrap items-center gap-2">
-				<span
-					class="animate-ping motion-reduce:hidden block h-2 w-2 rounded-full bg-red-500 opacity-75 absolute mt-0.5"
-				/>
-				<span class="block h-2 w-2 rounded-full bg-red-500 opacity-75 mt-0.5" />
-				<p class="text-red-500 flex items-center">Live</p>
-			</div>
-			<div
-				class="hidden peer-hover:block absolute bottom-10 right-3 border border-sky-400 py-1 px-2 pointer-events-none bg-sky-200 rounded rounded-br-none w-fit max-w-[240px]"
-			>
-				<p class="text-sm block min-w-[120px] text-sky-500">
-					This page updates automatically whenever a change occurs.
-				</p>
-				<div class="relative">
-					<div
-						class="absolute h-2 w-2 border-t-8 border-l-8 border-r-0 border-b-0 border-transparent border-t-sky-400 top-1 -right-[9px]"
-					/>
-				</div>
-			</div>
-		</div>
 		<form
 			action="?/createTicket"
 			method="POST"
@@ -230,6 +170,14 @@
 	</div>
 </div>
 <div bind:this={tableWrapper} class="overflow-auto">
+	<form id="ticketSelect" action="?/removeTickets"
+	method="POST"
+	use:enhance={() => {
+		return async ({ result }) => {
+			await applyAction(result);
+			await invalidateAll();
+		};
+	}}>
 	<table class="w-full mt-8 leading-[3rem] text-slate-500 border-separate" cellspacing="0">
 		<colgroup>
 			<col class="w-10" />
@@ -292,7 +240,6 @@
 		</thead>
 		<tbody>
 			{#if tickets?.length}
-				{#key tickets}
 					{#each tickets as ticket, index}
 						<tr
 							on:click={async () => {
@@ -405,7 +352,6 @@
 							</td>
 						</tr>
 					{/each}
-				{/key}
 			{:else}
             <tr>
               <td class="text-center leading-10 py-6" colspan="7">
@@ -432,6 +378,7 @@
       {/if}
 		</tbody>
 	</table>
+	</form>
 </div>
 
 <style>

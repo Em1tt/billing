@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
+	import type { Admin, Record } from 'pocketbase';
 	import Dropdown from './Dropdown.svelte';
-	//import { currentUser, pb } from './pocketbase';
+	export let user: Record | Admin | null = null;
 </script>
 
 <div class="border-b border-b-slate-400/40 bg-slate-200 fixed top-0 left-0 w-screen px-2 py-0.5">
@@ -54,8 +55,7 @@
 		</nav>
 		<div class="w-64 flex items-center">
 			<ul class="text-slate-600 relative">
-				<!--
-				{#if $currentUser}
+				{#if user}
 					<li>
 						<Dropdown text="Profile">
 							<ul class="leading-loose">
@@ -65,12 +65,7 @@
 									>
 								</li>
 								<li>
-									<form on:submit action="/logout" class="text-left" method="POST" use:enhance={() => {
-										return async ({ result }) => {
-										  await applyAction(result);
-										  pb.authStore.clear();
-										};
-									  }}>
+									<form on:submit action="/logout" class="text-left" method="POST">
 										<button type="submit" class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2 text-left">Sign out</button>
 									</form>
 								</li>
@@ -96,7 +91,6 @@
 						</Dropdown>
 					</li>
 				{/if}
-				-->
 			</ul>
 		</div>
 	</div>

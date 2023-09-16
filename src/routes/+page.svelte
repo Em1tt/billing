@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { applyAction, enhance } from "$app/forms";
-	export let data: App.Locals;
-  console.log(data);
+  export let data: App.Locals;
+
 </script>
 
 {#if data.user}

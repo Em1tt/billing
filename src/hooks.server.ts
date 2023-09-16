@@ -1,12 +1,20 @@
+import { LOCAL_POCKETBASE_URL } from '$env/static/private';
 import PocketBase from 'pocketbase';
 
 export const handle = async ({event, resolve}) => {
-    event.locals.pb = new PocketBase('http://localhost:5174');
+    event.locals.authExpired = false;
+    event.locals.pb = new PocketBase(LOCAL_POCKETBASE_URL);
     event.locals.pb.authStore.loadFromCookie(
         event.request.headers.get('cookie') || ''
     );
-        console.log(event.locals.pb.authStore.isValid);
     if(event.locals.pb.authStore.isValid) {
+        try{
+            await event.locals.pb.collection("users").authRefresh();
+        }catch(e){
+            event.locals.pb.authStore.clear();
+            event.locals.authExpired = true;
+            e;
+        };
         event.locals.user = event.locals.pb.authStore.model;
     }else{
         event.locals.user = null;
