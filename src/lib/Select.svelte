@@ -24,7 +24,7 @@
 </script>
 
 <div bind:this={select} class="flex flex-col flex-nowrap w-full relative">
-    <button type="button" on:click={toggleSelect} class="py-2 px-3 relative text-left cursor-pointer bg-transparent w-full h-10 border {selected ? "border-slate-400" : "border-slate-400/40"} rounded focus:border-sky-500 outline-none text-slate-400 focus:text-sky-500 peer group">
+    <button type="button" on:click={toggleSelect} class="py-2 px-3 relative text-left cursor-pointer bg-transparent w-full h-[42px] border {selected ? "border-slate-400" : "border-slate-400/40"} rounded focus:border-sky-500 outline-none text-slate-400 focus:text-sky-500 peer group">
         <p class="absolute {selected ? "-top-3 left-1" : open ? "-top-3 left-1" : "left-3 top-1.5"} pointer-events-none duration-100 text-slate-400 group-focus-within:text-sky-500 bg-slate-200 rounded px-1">{defaultText}</p>
         <p class="text-slate-600 group-focus-within:text-sky-500">{selected ? selected : ""}</p>
         {#if open}

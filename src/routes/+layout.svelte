@@ -10,9 +10,9 @@
         toast("Your Session has Expired. Please Log-In Again.", "error", 3000);
     }
 </script>
-<div class="h-screen bg-slate-200">
+<div class="bg-slate-200 min-h-screen">
     <Navbar user={data.user}/>
-    <div class="max-w-7xl mx-auto h-screen py-14 px-10">
+    <div class="max-w-7xl mx-auto py-14 px-10">
         <slot />
     </div>
     <Toast/>

@@ -1,4 +1,5 @@
 import { LOCAL_POCKETBASE_URL } from '$env/static/private';
+import { PUBLIC_DEV } from '$env/static/public';
 import PocketBase from 'pocketbase';
 
 export const handle = async ({event, resolve}) => {
@@ -24,7 +25,7 @@ export const handle = async ({event, resolve}) => {
 
     //TODO: secure before deployment
     response.headers.set('set-cookie', event.locals.pb.authStore.exportToCookie(
-        {secure: false}
+        {secure: PUBLIC_DEV != "true"}
     ));
 
     return response;

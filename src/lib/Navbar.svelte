@@ -5,7 +5,7 @@
 	export let user: Record | Admin | null = null;
 </script>
 
-<div class="border-b border-b-slate-400/40 bg-slate-200 fixed top-0 left-0 w-screen px-2 py-0.5">
+<div class="border-b border-b-slate-400/40 bg-slate-200 fixed top-0 left-0 w-screen px-2 py-0.5 z-50">
 	<div class="max-w-7xl px-10 mx-auto flex justify-between gap-4">
 		<div class="w-64">
 			<a href="/" class="flex flex-row items-center text-slate-700 w-fit">

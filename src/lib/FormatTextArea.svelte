@@ -1,12 +1,12 @@
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte'
-    import { Editor } from '@tiptap/core'
     import StarterKit from '@tiptap/starter-kit'
     import Blockquote from '@tiptap/extension-blockquote';
     import BulletList from '@tiptap/extension-bullet-list';
     import OrderedList from '@tiptap/extension-ordered-list';
     import Code from '@tiptap/extension-code';
-    import Link from '@tiptap/extension-link';
+    //Read alert in TipTap config
+    //import Link from '@tiptap/extension-link';
     import CharacterCount from '@tiptap/extension-character-count';
     import Paragraph from '@tiptap/extension-paragraph';
     import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
@@ -17,6 +17,7 @@
     import ts from 'highlight.js/lib/languages/typescript'
     import html from 'highlight.js/lib/languages/xml'
     import { createLowlight } from 'lowlight'
+	  import { Editor } from '@tiptap/core';
 
     const lowlight = createLowlight();
 
@@ -25,7 +26,7 @@
     lowlight.register('js', js);
     lowlight.register('ts', ts);
 
-    export let charLimit: number = 350;
+    export let charLimit: number = 2000;
     export let charWarningPercentage: number = 0.8;
     let element: HTMLElement;
     let editor: Editor;
@@ -57,14 +58,17 @@
               class: "text-black bg-slate-300 p-1 rounded my-0.5"
             }
           }),
+          /* ! Dangerous, user can rewrite what the anchor says without changing the redirect URL
           Link.configure({
             protocols: ["http", "https"],
             HTMLAttributes: {
               rel: 'noopener noreferrer',
               target: null,
-              class: "text-sky-500 cursor-pointer"
-            }
-          }),
+              class: "text-sky-500 cursor-pointer underline"
+            },
+            autolink: false,
+            linkOnPaste: false
+          }),*/
           CharacterCount.configure({
             limit: charLimit
           }),
@@ -84,7 +88,7 @@
         ],
         editorProps: {
         attributes: {
-          class: 'h-[600px] overflow-y-auto p-2 w-full break-words',
+          class: 'h-[500px] overflow-y-auto p-2 w-full break-words rounded-b',
         },
       },
         onTransaction: () => {
@@ -103,44 +107,72 @@
   </script>
   
   {#if editor}
-    <div class="border border-slate-400/40 border-b-0 w-full p-2 rounded-t flex items-center gap-2">
-      <!--
-      <button
-      on:click={() => editor.chain().focus().toggleHeading({ level: 1}).run()}
-      class:active={editor.isActive('heading', { level: 1 })}
-    >
-      H1
+    <div class="border border-slate-400/40 border-b-0 w-full p-2 rounded-t flex items-center gap-1">
+    <button type="button" on:click={() => editor.chain().focus().toggleBold().run()} class:active={editor.isActive('bold')}>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bold" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M7 5h6a3.5 3.5 0 0 1 0 7h-6z"></path>
+        <path d="M13 12h1a3.5 3.5 0 0 1 0 7h-7v-7"></path>
+     </svg>
     </button>
-    <button
-      on:click={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-      class:active={editor.isActive('heading', { level: 2 })}
-    >
-      H2
-    </button>
-    <button on:click={() => editor.chain().focus().setParagraph().run()} class:active={editor.isActive('paragraph')}>
-      P
-    </button>
-    -->
-    <button on:click={() => editor.chain().focus().toggleBold().run()} class:active={editor.isActive('bold')}>
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 16">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 1h4.5a3.5 3.5 0 1 1 0 7H3m0-7v7m0-7H1m2 7h6.5a3.5 3.5 0 1 1 0 7H3m0-7v7m0 0H1"/>
-          </svg>
-    </button>
-    <button on:click={() => editor.chain().focus().toggleItalic().run()} class:active={editor.isActive('italic')}>
-      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 16">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m3.874 15 6.143-14M1 15h6.33M6.67 1H13"/>
-      </svg>
+    <button type="button" on:click={() => editor.chain().focus().toggleItalic().run()} class:active={editor.isActive('italic')}>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-italic" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M11 5l6 0"></path>
+        <path d="M7 19l6 0"></path>
+        <path d="M14 5l-4 14"></path>
+     </svg>
     </button>
     <div class="w-0.5 bg-slate-400/40 block h-6 mx-2"></div>
-    <button on:click={() => editor.chain().focus().toggleCode().run()} class:active={editor.isActive('code')}>
-      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4 1 8l4 4m10-8 4 4-4 4M11 1 9 15"/>
-      </svg>
+    <button type="button" on:click={() => editor.chain().focus().toggleBulletList().run()} class:active={editor.isActive('bulletList')}>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-list" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M9 6l11 0"></path>
+        <path d="M9 12l11 0"></path>
+        <path d="M9 18l11 0"></path>
+        <path d="M5 6l0 .01"></path>
+        <path d="M5 12l0 .01"></path>
+        <path d="M5 18l0 .01"></path>
+     </svg>
     </button>
-    <button on:click={() => editor.chain().focus().toggleCodeBlock().run()} class:active={editor.isActive('codeBlock')}>
-      <svg aria-hidden="true" class="stroke-current stroke-[3] w-12 h-12" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
+    <button type="button" on:click={() => editor.chain().focus().toggleOrderedList().run()} class:active={editor.isActive('orderedList')}>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-list-numbers" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M11 6h9"></path>
+        <path d="M11 12h9"></path>
+        <path d="M12 18h8"></path>
+        <path d="M4 16a2 2 0 1 1 4 0c0 .591 -.5 1 -1 1.5l-3 2.5h4"></path>
+        <path d="M6 10v-6l-2 2"></path>
+     </svg>
+    </button>
+    <div class="w-0.5 bg-slate-400/40 block h-6 mx-2"></div>
+    <button type="button" on:click={() => editor.chain().focus().toggleBlockquote().run()} class:active={editor.isActive('blockquote')}>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-blockquote" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M6 15h15"></path>
+        <path d="M21 19h-15"></path>
+        <path d="M15 11h6"></path>
+        <path d="M21 7h-6"></path>
+        <path d="M9 9h1a1 1 0 1 1 -1 1v-2.5a2 2 0 0 1 2 -2"></path>
+        <path d="M3 9h1a1 1 0 1 1 -1 1v-2.5a2 2 0 0 1 2 -2"></path>
+     </svg>
+    </button>
+    <div class="w-0.5 bg-slate-400/40 block h-6 mx-2"></div>
+    <button type="button" on:click={() => editor.chain().focus().toggleCode().run()} class:active={editor.isActive('code')}>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-code" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M7 8l-4 4l4 4"></path>
+        <path d="M17 8l4 4l-4 4"></path>
+        <path d="M14 4l-4 16"></path>
+     </svg>
+    </button>
+    <button type="button" on:click={() => editor.chain().focus().toggleCodeBlock().run()} class:active={editor.isActive('codeBlock')}>
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-source-code" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M14.5 4h2.5a3 3 0 0 1 3 3v10a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-5"></path>
+        <path d="M6 5l-2 2l2 2"></path>
+        <path d="M10 9l2 -2l-2 -2"></path>
+     </svg>
     </button>
     <p class="pointer-events-none ml-auto {charCount == charLimit ? "text-red-500" : charCount > charLimit * charWarningPercentage ? "text-slate-600" : "text-slate-400"}">{charCount}/{charLimit}</p>
     </div>
@@ -156,7 +188,7 @@
       @apply text-slate-600;
     }
     button > svg{
-      @apply w-4 h-4;
+      @apply w-5 h-5;
     }
     :global(.editor .tiptap){
       @apply outline-none whitespace-pre-wrap break-words hyphens-auto;
