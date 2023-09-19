@@ -28,7 +28,6 @@
 	let tableWrapper: HTMLElement;
 	let loadingTicket: boolean = false;
 	let deleteAction: boolean = false;
-  	let finishedSearching: boolean = false;
 
 	onMount(async () => {
 		if (window) {
@@ -355,7 +354,7 @@
 			{:else}
             <tr>
               <td class="text-center leading-10 py-6" colspan="7">
-                {#if finishedSearching}
+                {#if !tickets.length}
                   <p>No tickets found.</p>
                 {:else}
                 <svg

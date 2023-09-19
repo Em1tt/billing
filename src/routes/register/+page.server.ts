@@ -1,7 +1,6 @@
 import { TURNSTILE_SECRET } from '$env/static/private';
 import { PUBLIC_DEV, PUBLIC_TURNSTILE_URL } from '$env/static/public';
 import { fail, redirect } from '@sveltejs/kit';
-const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 /** @type {import('./$types').Actions} */
 export const actions = {

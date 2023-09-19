@@ -143,7 +143,6 @@
                 loading = false;
                 if($page.form.success){
                 try{
-                    //await pb.collection('users').authWithPassword(email.value, password.value);
                     await goto("/");
                 }catch(e){
                     console.log(e);        
