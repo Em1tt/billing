@@ -5,11 +5,17 @@ export const actions: import('./$types').Actions = {
   default: async ({request, locals, params}) => {
     const data = await request.formData();
     const files = data.getAll("files") as Array<File>;
+    let filesURLs = data.get("filesURLs");
+    if(filesURLs){
+      filesURLs = JSON.parse(filesURLs);
+    }
+    console.log(files);
     const formData = new FormData();
-    for (const file of files) {
-      if(file.name == "undefined") continue;
-      console.log(file);
-      formData.append('attachments', file);
+    if(files){
+      for (const file of files) {
+        if(file.name == "undefined") continue;
+        formData.append('attachments', file);
+      }
     }
     const subject = data.get("subject");
     const content = data.get("content");
@@ -22,10 +28,11 @@ export const actions: import('./$types').Actions = {
     if(category == "null"){
       category = null;
     }
-    let status = 0;
     try{
-      await locals.pb.collection("tickets").update(params.slug, {attachments: null, subject, text: content, priority, category});
+      await locals.pb.collection("tickets").update(params.slug, {subject , text: content, priority, category});
+      if(files){
       await locals.pb.collection("tickets").update(params.slug, formData);
+      }
     }catch(e){
       console.error(e);
     }
@@ -34,9 +41,9 @@ export const actions: import('./$types').Actions = {
         subject: "Cannot be empty"
       }
     }
-    if(parseInt(textLength) < 40){
+    if(parseInt(textLength) < 10){
       return {
-        text: "Cannot be empty"
+        text: "Cannot be less than 10 characters long"
       }
     }
     if(priority == ''){
@@ -49,9 +56,8 @@ export const actions: import('./$types').Actions = {
         category: "Cannot be empty"
       }
     }
-    status = 1;
     try{
-      await locals.pb.collection("tickets").update(params.slug, {status});
+      await locals.pb.collection("tickets").update(params.slug, {status: 1});
     }catch(e){
       e;
     }
@@ -60,11 +66,10 @@ export const actions: import('./$types').Actions = {
 };
 
 /** @type {import('./$types').LayoutServerLoad} */
-export async function load({locals, params}) {
+export async function load({locals, url, params}) {
   if(!locals.pb.authStore.isValid) throw redirect(302, "/login");
+  const token = await locals.pb.files.getToken();
   const ticket = await locals.pb.collection("tickets").getOne(params.slug, {expand: "user,priority,category"});
-  if(!ticket) throw error(404);
-  if(ticket.status == 0) throw redirect(303, `/tickets/${ticket.id}/edit`);
   let priorities, categories;
   try{
     priorities = await locals.pb.collection("ticket_priorities").getList(0, 50);
@@ -72,7 +77,7 @@ export async function load({locals, params}) {
   }catch(e){
     e;
   }
-  const token = await locals.pb.files.getToken();
+  if(!ticket) throw error(404);
   return {
       token,
       ticket: serializeNonPOJOs(ticket),

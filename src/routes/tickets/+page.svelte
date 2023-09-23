@@ -21,6 +21,7 @@
 		if (a[modFilter] < b[modFilter]) return filter.startsWith('-') ? -1 : 1;
 		return filter.startsWith('-') ? 1 : -1;
 	});
+	console.log(tickets);
 
 	mapCheckboxes();
 
@@ -185,6 +186,7 @@
 			<col class="w-auto min-w-[160px]" />
 			<col class="w-auto min-w-[160px]" />
 			<col class="w-auto min-w-[160px]" />
+			<col class="w-auto min-w-[160px]" />
 			<col class="w-12" />
 		</colgroup>
 		<thead>
@@ -203,6 +205,13 @@
 					}}
 					class="text-left hover:bg-slate-300 px-2 cursor-pointer hover:text-slate-600 rounded-t"
 					>Subject</th
+				>
+				<th
+					on:click={() => {
+						handleFilter('category');
+					}}
+					class="text-left hover:bg-slate-300 px-2 cursor-pointer hover:text-slate-600 rounded-t"
+					>Category</th
 				>
 				<th
 					on:click={() => {
@@ -259,23 +268,19 @@
 							<td class="px-2 whitespace-nowrap overflow-ellipsis overflow-hidden"
 								>#{ticket.id} - {ticket.subject == '' ? 'Not set' : ticket.subject}</td
 							>
-							<!--
-          0 - Unset;
-          1 - Low;
-          2 - Medium;
-          3 - High;
-          4 - Critical 
-        -->
 							<td class="px-2">
-								{ticket.priority
-									? ticket.priority == 1
-										? 'Low'
-										: ticket.priority == 2
-										? 'Medium'
-										: ticket.priority == 3
-										? 'High'
-										: 'Critical'
-									: 'Not set'}
+								{#if ticket.expand.category?.name}
+									{ticket.expand.category.name}
+								{:else}
+									Not set
+								{/if}
+							</td>
+							<td class="px-2">
+								{#if ticket.expand.priority?.name}
+									{ticket.expand.priority.name}
+								{:else}
+									Not set
+								{/if}
 							</td>
 							<td class="px-2">
 								<!--

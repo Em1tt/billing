@@ -5,6 +5,7 @@
     export let data: App.Locals;
     import Toast from '$lib/Toast.svelte';
     import { toast } from '$lib/notify';
+	import ImageModal from "$lib/ImageModal.svelte";
 
     if(data.authExpired){
         toast("Your Session has Expired. Please Log-In Again.", "error", 3000);
@@ -15,5 +16,6 @@
     <div class="max-w-7xl mx-auto py-14 px-10">
         <slot />
     </div>
+    <ImageModal/>
     <Toast/>
 </div>

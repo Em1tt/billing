@@ -11,7 +11,7 @@ export const actions: import('./$types').Actions = {
         });
         if(!ticket) return fail(400, {});
         const ticketID = ticket.id;
-        throw redirect(302, `/tickets/${ticketID}`);
+        throw redirect(302, `/tickets/${ticketID}/edit`);
         
     },
     removeTickets: async({locals, request}) => {
@@ -29,7 +29,7 @@ export const actions: import('./$types').Actions = {
 /** @type {import('./$types').LayoutServerLoad} */
 export async function load({locals, url}) {
     if(!locals.pb.authStore.isValid) throw redirect(302, "/login");
-    const tickets = await locals.pb.collection("tickets").getList(parseInt(url.searchParams.get("page") || "") || 0, 20);
+    const tickets = await locals.pb.collection("tickets").getList(parseInt(url.searchParams.get("page") || "") || 0, 20, {expand: "category,priority"});
     return {
         tickets: serializeNonPOJOs(tickets)
     }

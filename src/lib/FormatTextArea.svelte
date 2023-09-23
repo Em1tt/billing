@@ -28,12 +28,17 @@
 
 	export let charLimit: number = 2000;
 	export let charWarningPercentage: number = 0.8;
+	export let text: string;
+	export let invalid: boolean;
+	export let editable: boolean = true;
 	let element: HTMLElement;
 	export let editor: Editor;
-	
-	let charCount: number;
+	export let charCount: number;
+	console.log(text);
 	onMount(() => {
 		editor = new Editor({
+			editable,
+			content: text,
 			enableInputRules: false,
 			enablePasteRules: false,
 			element: element,
@@ -89,13 +94,14 @@
 			],
 			editorProps: {
 				attributes: {
-					class: 'h-[500px] overflow-y-auto p-2 w-full break-words rounded-b'
+					class: `${editable ? "h-[500px]" : "max-h-[300px] h-auto"} overflow-y-auto p-2 w-full break-words rounded-b text-slate-600`
 				}
 			},
 			onTransaction: () => {
 				// force re-render so `editor.isActive` works as expected
 				editor = editor;
 				charCount = parseInt(editor.storage.characterCount.characters());
+				invalid = false;
 			}
 		});
 	});
@@ -107,8 +113,8 @@
 	});
 </script>
 
-{#if editor}
-	<div class="border border-slate-400/40 border-b-0 w-full p-2 rounded-t flex items-center gap-1">
+{#if editor && editable}
+	<div class="border border-b-0 w-full p-2 rounded-t flex items-center gap-1 {invalid ? "border-red-500" : "border-slate-400/40" }">
 		<button
 			type="button"
 			on:click={() => editor.chain().focus().toggleBold().run()}
@@ -292,7 +298,7 @@
 	</div>
 {/if}
 
-<div class="border border-slate-400/40 editor" bind:this={element} />
+<div class="border-slate-400/40 border {editable ? "" : "rounded"} {invalid ? "border-red-500" : ""} editor" bind:this={element} />
 
 <style>
 	button {
