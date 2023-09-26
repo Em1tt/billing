@@ -9,8 +9,10 @@
       <div class="relative">
         <button type="button" on:click={removeModal} class="top-0 right-0 absolute text-slate-600 hover:text-slate-800">X</button>
         <p class="text-slate-600 font-bold text-lg">Viewing Image</p>
+        {#if $modal.name}
         <p class="text-slate-500 text-sm text-ellipsis overflow-hidden max-w-xl">{$modal.name}</p>
-        <img src={$modal.url} alt="Attachment" class="rounded mt-2">
+        {/if}
+        <img src={$modal.url} alt="Attachment" class="rounded mt-2 min-w-[256px] min-h-[256px]">
       </div>
     </div>
   {/if}

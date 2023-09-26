@@ -39,7 +39,6 @@
     files = null;
     filePreviews = [];
   };
-  console.log(data.ticket.status);
   </script>
 
 <Breadcrumbs path={[{text: "Home", path: "/"}, {text: "Tickets", path: "/tickets"}, {text: data.ticket.id, path: `/tickets/${data.ticket.id}`}, {text: "Edit"}]} />
@@ -52,7 +51,6 @@
   formData.append("content", JSON.stringify(editor.getJSON()));
   formData.append("contentLength", textLength);
   formData.append("status", data.ticket.status);
-  formData.append("filesURLs", JSON.stringify(filePreviews));
   return async ({ result }) => {
       if((result.type == "success")){
         if(result.data?.success){
@@ -115,8 +113,18 @@
 			<button type="button" on:click={() => {
 				shootImageModal(data.ticket.attachments[i], file);
 			}} class="group grid place-items-center">
-				<p class="absolute text-white z-10 hidden group-hover:block">ICON</p>
-				<img src={file} alt="Attachment" width="64" height="64" class="aspect-square overflow-hidden rounded group-hover:brightness-50">
+       <svg xmlns="http://www.w3.org/2000/svg" class="absolute text-white z-10 hidden group-hover:block" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M16 4l4 0l0 4"></path>
+        <path d="M14 10l6 -6"></path>
+        <path d="M8 20l-4 0l0 -4"></path>
+        <path d="M4 20l6 -6"></path>
+        <path d="M16 20l4 0l0 -4"></path>
+        <path d="M14 14l6 6"></path>
+        <path d="M8 4l-4 0l0 4"></path>
+        <path d="M4 4l6 6"></path>
+     </svg>
+				<img src={file} alt="Attachment" width="64" height="64" class="aspect-square overflow-hidden rounded group-hover:brightness-[0.25] group-hover:bg-black/75">
 			</button>
 		{/each}
     </div>

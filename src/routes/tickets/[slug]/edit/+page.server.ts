@@ -5,10 +5,6 @@ export const actions: import('./$types').Actions = {
   default: async ({request, locals, params}) => {
     const data = await request.formData();
     const files = data.getAll("files") as Array<File>;
-    let filesURLs = data.get("filesURLs");
-    if(filesURLs){
-      filesURLs = JSON.parse(filesURLs);
-    }
     console.log(files);
     const formData = new FormData();
     if(files){
@@ -29,8 +25,9 @@ export const actions: import('./$types').Actions = {
       category = null;
     }
     try{
-      await locals.pb.collection("tickets").update(params.slug, {subject , text: content, priority, category});
+      await locals.pb.collection("tickets").update(params.slug, {subject, text: content, priority, category});
       if(files){
+      await locals.pb.collection("tickets").update(params.slug, {attachments: null});
       await locals.pb.collection("tickets").update(params.slug, formData);
       }
     }catch(e){
