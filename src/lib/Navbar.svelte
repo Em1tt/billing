@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { applyAction, enhance } from '$app/forms';
 	import type { Admin, Record } from 'pocketbase';
 	import Dropdown from './Dropdown.svelte';
+	import { invalidateAll } from '$app/navigation';
 	export let user: Record | Admin | null = null;
 </script>
 
@@ -17,39 +17,13 @@
 			<ul class="flex flex-row items-center gap-6 text-slate-600">
 				<li><a href="/" class="hover:text-slate-800">Home</a></li>
 				<li class="relative">
-					<Dropdown text="Order">
-						<ul class="leading-loose">
-							<li>
-								<a href="/order" class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2"
-									>Minecraft Servers</a
-								>
-							</li>
-						</ul>
-					</Dropdown>
+					<Dropdown text="Order" urls={[{text: "Minecraft Servers", url:"/"}]}/>
 				</li>
 				<li class="relative">
-					<Dropdown text="Support">
-						<ul class="leading-loose">
-							<li>
-								<a href="/tickets" class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2"
-									>View tickets</a
-								>
-							</li>
-							<li>
-								<a href="/" class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2"
-									>Join our Discord</a
-								>
-							</li>
-							<li>
-								<a href="/" class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2"
-									>Knowledgebase</a
-								>
-							</li>
-						</ul>
-					</Dropdown>
+					<Dropdown text="Support" urls={[{text:"View Tickets", url: "/tickets"}, {text:"Join our Discord", url: "/"}, {text: "Knowledgebase", url: "/"}]}/>
 				</li>
 				<li class="relative">
-					<Dropdown text="More" />
+					<Dropdown text="More"/>
 				</li>
 			</ul>
 		</nav>
@@ -57,38 +31,11 @@
 			<ul class="text-slate-600 relative">
 				{#if user}
 					<li>
-						<Dropdown text="Profile">
-							<ul class="leading-loose">
-								<li>
-									<a href="/profile" class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2"
-										>Edit Profile</a
-									>
-								</li>
-								<li>
-									<form on:submit action="/logout" class="text-left" method="POST">
-										<button type="submit" class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2 text-left">Sign out</button>
-									</form>
-								</li>
-							</ul>
-						</Dropdown>
+						<Dropdown text="Profile" urls={[{text: "Edit Profile", url: "/profile"}, {text:" Sign Out", emphasis: "danger", form: {action: "/logout", method: "POST", enhance(){invalidateAll()}}}]}/>
 					</li>
 				{:else}
 					<li>
-						<Dropdown text="Login">
-							<ul class="leading-loose">
-								<li>
-									<a href="/login" class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2"
-										>Login</a
-									>
-								</li>
-								<li>
-									<a
-										href="/register"
-										class="w-40 block hover:text-slate-800 focus:text-slate-800 px-2">Register</a
-									>
-								</li>
-							</ul>
-						</Dropdown>
+						<Dropdown text="Login" urls={[{text: "Login", url: "/login"}, {text: "Register", url: "/register"}]}/>
 					</li>
 				{/if}
 			</ul>
