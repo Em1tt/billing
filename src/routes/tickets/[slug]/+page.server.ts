@@ -2,60 +2,21 @@ import { serializeNonPOJOs } from '$lib/helpers';
 import { error, redirect } from '@sveltejs/kit';
  
 export const actions: import('./$types').Actions = {
-  default: async ({request, locals, params}) => {
-    const data = await request.formData();
-    const files = data.getAll("files") as Array<File>;
-    const formData = new FormData();
-    for (const file of files) {
-      if(file.name == "undefined") continue;
-      console.log(file);
-      formData.append('attachments', file);
-    }
-    const subject = data.get("subject");
-    const content = data.get("content");
-    let priority = data.get("priority");
-    let category = data.get("category");
-    const textLength = data.get("contentLength") as string;
-    if(priority == "null"){
-      priority = null;
-    }
-    if(category == "null"){
-      category = null;
-    }
-    let status = 0;
-    try{
-      await locals.pb.collection("tickets").update(params.slug, {attachments: null, subject, text: content, priority, category});
-      await locals.pb.collection("tickets").update(params.slug, formData);
-    }catch(e){
-      console.error(e);
-    }
-    if(subject == ""){
-      return {
-        subject: "Cannot be empty"
-      }
-    }
-    if(parseInt(textLength) < 40){
-      return {
-        text: "Cannot be empty"
-      }
-    }
-    if(priority == ''){
-      return {
-        priority: "Cannot be empty"
-      }
-    }
-    if(category== ''){
-      return {
-        category: "Cannot be empty"
-      }
-    }
-    status = 1;
-    try{
-      await locals.pb.collection("tickets").update(params.slug, {status});
+  close: async ({request, locals, params}) => {
+    try {
+      locals.pb.collection("tickets").update(params.slug, {status: 4});
     }catch(e){
       e;
     }
-    return {success: true}
+    return {success: true};
+  },
+  open: async ({request, locals, params}) => {
+    try {
+      locals.pb.collection("tickets").update(params.slug, {status: 1});
+    }catch(e){
+      e;
+    }
+    return {success: true};
   }
 };
 

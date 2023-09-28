@@ -4,11 +4,12 @@
 	import { shootImageModal } from '$lib/modal';
 	import type { Editor } from '@tiptap/core';
 	import { onMount } from 'svelte';
+	import Dropdown from '$lib/Dropdown.svelte';
+	import { invalidateAll } from '$app/navigation';
 
 	let FormatTextArea: any;
 	/** @type {import('./$types').PageData} */
 	export let data: any;
-	console.log(data);
 	const files = data.ticket.attachments.map((i: string) => `${PUBLIC_POCKETBASE_URL}${data.ticket.collectionId}/${data.ticket.id}/${i}?token=${data.token}`);
 	onMount(async () => {
 		FormatTextArea = (await import('$lib/FormatTextArea.svelte')).default;
@@ -25,7 +26,14 @@
 	]}
 />
 
-<h1 class="text-3xl font-bold text-slate-700">Viewing Ticket</h1>
+<div class="flex content-between flex-nowrap">
+	<h1 class="text-3xl font-bold text-slate-700">
+	  Viewing Ticket
+	</h1>
+	<div class="ml-auto items-center relative flex">
+	  <Dropdown displayAsMore={true} topBorder={true} xFromLeft={false} urls={[{text: "Edit Ticket", url: `/tickets/${data.ticket.id}/edit`}, (data.ticket.status != 4 && data.ticket.status != 5) ? {text: "Close ticket", emphasis: "danger", form: {action: "?/close", method: "POST", async enhance() {invalidateAll()}}} : {text: "Open Ticket", emphasis: "success", form: {action: "?/open", method: "POST", async enhance(){invalidateAll()}}}]}/>
+	</div>
+  </div>
 
 <div class="w-full rounded mt-4">
 	<p class="text-slate-600 text-sm">Subject</p>

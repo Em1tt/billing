@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 	import Breadcrumbs from '$lib/Breadcrumbs.svelte';
+	import Dropdown from '$lib/Dropdown.svelte';
   import Select from '$lib/Select.svelte';
 	import TextInput from '$lib/TextInput.svelte';
 	import { shootImageModal } from '$lib/modal';
@@ -16,7 +17,6 @@
 	import { onMount } from 'svelte';
   /** @type {import('./$types').PageData} */
   export let data: any;
-  console.log(data);
   let priority: string = data?.ticket.priority,
        subject: string = data.ticket.subject.trim(),
       category: string = data.ticket.category,
@@ -42,10 +42,16 @@
   </script>
 
 <Breadcrumbs path={[{text: "Home", path: "/"}, {text: "Tickets", path: "/tickets"}, {text: data.ticket.id, path: `/tickets/${data.ticket.id}`}, {text: "Edit"}]} />
+<div class="flex content-between flex-nowrap">
+  <h1 class="text-3xl font-bold text-slate-700">
+    {parseInt(data.ticket.status) == 0 ? "Create a ticket" : "Edit a ticket"}
+  </h1>
+  <div class="ml-auto items-center relative flex">
+    <Dropdown displayAsMore={true} topBorder={true} xFromLeft={false} urls={[{text: "View Tickets", url:"/tickets", emphasis: "danger", form: {action: "?/close", method: "POST"}}, {text: "Join our Discord", url: "/"}]}/>
+  </div>
+</div>
 
-<h1 class="text-3xl font-bold text-slate-700">{parseInt(data.ticket.status) == 0 ? "Create a ticket" : "Edit a ticket"}</h1>
-
-<form enctype="multipart/form-data" spellcheck="false" action="" class="flex-col flex-nowrap gap-4 mt-2" method="POST" use:enhance={({ formData }) => {
+<form enctype="multipart/form-data" spellcheck="false" action="?/editTicket" class="flex-col flex-nowrap gap-4 mt-2" method="POST" use:enhance={({ formData }) => {
   formData.append("priority", priority);
   formData.append("category", category);
   formData.append("content", JSON.stringify(editor.getJSON()));

@@ -2,10 +2,9 @@ import { serializeNonPOJOs } from '$lib/helpers';
 import { error, redirect } from '@sveltejs/kit';
  
 export const actions: import('./$types').Actions = {
-  default: async ({request, locals, params}) => {
+  editTicket: async ({request, locals, params}) => {
     const data = await request.formData();
     const files = data.getAll("files") as Array<File>;
-    console.log(files);
     const formData = new FormData();
     if(files){
       for (const file of files) {
@@ -59,6 +58,14 @@ export const actions: import('./$types').Actions = {
       e;
     }
     return {success: true}
+  },
+  close: async ({request, locals, params}) => {
+    try{
+      locals.pb.collection("Tickets").delete(params.slug);
+    }catch(e){
+      return e;
+    }
+    throw redirect(303, "/tickets");
   }
 };
 
