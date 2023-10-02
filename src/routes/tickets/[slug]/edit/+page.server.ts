@@ -5,6 +5,7 @@ export const actions: import('./$types').Actions = {
   editTicket: async ({request, locals, params}) => {
     const data = await request.formData();
     const files = data.getAll("files") as Array<File>;
+    const updateFile = data.get("filesUpdated");
     const formData = new FormData();
     if(files){
       for (const file of files) {
@@ -25,7 +26,7 @@ export const actions: import('./$types').Actions = {
     }
     try{
       await locals.pb.collection("tickets").update(params.slug, {subject, text: content, priority, category});
-      if(files){
+      if(updateFile == "true"){
       await locals.pb.collection("tickets").update(params.slug, {attachments: null});
       await locals.pb.collection("tickets").update(params.slug, formData);
       }
@@ -59,13 +60,15 @@ export const actions: import('./$types').Actions = {
     }
     return {success: true}
   },
-  close: async ({request, locals, params}) => {
+  delete: async ({request, locals, params}) => {
+    if(!locals.pb.authStore.isValid) throw redirect(302, "/login");
+    if(!locals.user) throw redirect(302, "/login");
     try{
-      locals.pb.collection("Tickets").delete(params.slug);
+      await locals.pb.collection("Tickets").delete(params.slug);
     }catch(e){
-      return e;
+      e;
     }
-    throw redirect(303, "/tickets");
+    return {success: true};
   }
 };
 

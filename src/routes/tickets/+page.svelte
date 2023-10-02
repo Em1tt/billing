@@ -1,20 +1,21 @@
 <script lang="ts">
 	import Breadcrumbs from '$lib/Breadcrumbs.svelte';
 	import Checkbox from '$lib/Checkbox.svelte';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { applyAction, enhance } from '$app/forms';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { fly } from 'svelte/transition';
 	import type { Record, ListResult } from 'pocketbase';
 	import type { MouseEventHandler } from 'svelte/elements';
+	import {browser} from "$app/environment"
 
 	interface Ticket extends Record {
 		expand: {[any: string]: Record};
 	}
 
 	export let data;
-
+	console.log(data);
 	let selectAll : boolean,
 		checkboxes: Array<{ id: string; checked: boolean }> = [],
 		   tickets: Ticket[],
@@ -29,13 +30,20 @@
 		mapCheckboxes();
 	};
 
+	function handleTableShadow(){
+		displayShadow = tableWrapper?.scrollWidth > tableWrapper?.clientWidth;
+	}
+
 	onMount(async () => {
-		if (window) {
-			window.onresize = () => {
-				displayShadow = tableWrapper.scrollWidth > tableWrapper.clientWidth;
-			};
+		if (browser) {
+			window.addEventListener("resize", handleTableShadow);
 		};
 	});
+	onDestroy(async () => {
+		if(browser){
+			window.removeEventListener("resize", handleTableShadow);
+		}
+	})
 
 	function tableSort(a: Ticket, b: Ticket){
 		//Uses custom function because this allows for deep sort based on weight values of DB relation attributes
@@ -46,7 +54,6 @@
 			inverse = sortBy.startsWith("-");
 			sortProperty = inverse ? sortBy.slice(1) : sortBy;
 		};
-		console.log(a.expand, b.expand);
 		if(a.expand[sortProperty] && b.expand[sortProperty]){
 			return (a.expand[sortProperty].weight < b.expand[sortProperty].weight ? 1 : -1) * (inverse ? -1 : 1);
 		}else if(a.expand[sortProperty] && !b.expand[sortProperty]){
@@ -159,7 +166,7 @@
 		>
 			<button
 				type="submit"
-				class="p-2 cursor-pointer bg-sky-200 border border-sky-400 text-sky-600 hover:text-sky-800 hover:border-sky-600 rounded w-40"
+				class="p-2 cursor-pointer text-sky-500 hover:bg-sky-400/20 rounded px-4"
 			>
 				{#if loadingTicket}
 					<svg
@@ -383,6 +390,35 @@
 									/>
 								</svg>
 							{/if}
+						</td>
+					</tr>
+				{/if}
+				{#if data.tickets.page < data.tickets.totalPages}
+					<tr>
+						<td class="text-center leading-10 py-2" colspan="7">
+							<button
+								type="submit"
+								class="cursor-pointer text-black bg-gray-400/20 hover:bg-gray-400/40 rounded px-4"
+							>
+								{#if loadingTicket}
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+										class="w-6 h-6 mx-auto animate-spin"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+										/>
+									</svg>
+								{:else}
+									Load more ({data.tickets.totalItems - data.tickets.items.length})
+								{/if}
+							</button>
 						</td>
 					</tr>
 				{/if}

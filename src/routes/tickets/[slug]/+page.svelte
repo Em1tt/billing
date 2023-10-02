@@ -37,14 +37,14 @@
 
 <div class="w-full rounded mt-4">
 	<p class="text-slate-600 text-sm">Subject</p>
-	<p class="text-slate-600 font-bold mb-2">{data.ticket.subject}</p>
+	<p class="text-slate-600 font-bold mb-2">{data.ticket.subject || "Not Set"}</p>
 	<p class="mb-1 text-slate-600 text-sm">Details</p>
 	{#if FormatTextArea}
 		<svelte:component
 			this={FormatTextArea}
 			editable={false}
 			bind:editor
-			text={data.ticket.text}
+			text={data.ticket.text || "Not Set"}
 			charLimit={4000}
 		/>
 	{/if}
@@ -73,11 +73,11 @@
 	<div class="border border-slate-400/40 mt-2 rounded grid grid-cols-4 gap-2 text-slate-600 p-2">
 		<div class="flex flex-col flex-nowrap gap-1">
 			<p class="text-sm">Category</p>
-			<p class="font-bold">{data.ticket.expand.category.name}</p>
+			<p class="font-bold">{data.ticket?.expand?.category?.name || "Not Set"}</p>
 		</div>
 		<div class="flex flex-col flex-nowrap gap-1">
 			<p class="text-sm">Priority</p>
-			<p class="font-bold">{data.ticket.expand.priority.name}</p>
+			<p class="font-bold">{data.ticket?.expand?.priority?.name || "Not Set"}</p>
 		</div>
 		<div class="flex flex-col flex-nowrap gap-1">
 			<p class="text-sm">Status</p>

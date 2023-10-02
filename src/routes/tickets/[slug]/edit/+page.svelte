@@ -9,28 +9,34 @@
 	import { shootImageModal } from '$lib/modal';
 	import { toast } from '$lib/notify';
 	import type { Editor } from '@tiptap/core';
+  import { onMount } from 'svelte';
   let FormatTextArea: any,
     validateSubject: (error: string) => void,
     validateText: boolean,
     validatePriority: boolean,
     validateCategory: boolean;
-	import { onMount } from 'svelte';
+
   /** @type {import('./$types').PageData} */
   export let data: any;
+
   let priority: string = data?.ticket.priority,
        subject: string = data.ticket.subject.trim(),
       category: string = data.ticket.category,
       textLength: string;
+
   onMount(async () => {
 		FormatTextArea = (await import('$lib/FormatTextArea.svelte')).default;
 	});
+
   let files: FileList | null;
   let input: HTMLInputElement; 
   let filePreviews: Array<string> = data.ticket.attachments.map((i: string) => `${PUBLIC_POCKETBASE_URL}${data.ticket.collectionId}/${data.ticket.id}/${i}?token=${data.token}`);
   let editor: Editor;
+  let filesUpdated: boolean = false;
 	$: if(files){
     filePreviews = [];
-		for (const file of files) {
+		filesUpdated = true;
+    for (const file of files) {
       filePreviews.push(URL.createObjectURL(file));
 		}
   };
@@ -38,7 +44,9 @@
     input.value = '';
     files = null;
     filePreviews = [];
+    filesUpdated = true;
   };
+  console.log("false")
   </script>
 
 <Breadcrumbs path={[{text: "Home", path: "/"}, {text: "Tickets", path: "/tickets"}, {text: data.ticket.id, path: `/tickets/${data.ticket.id}`}, {text: "Edit"}]} />
@@ -47,7 +55,9 @@
     {parseInt(data.ticket.status) == 0 ? "Create a ticket" : "Edit a ticket"}
   </h1>
   <div class="ml-auto items-center relative flex">
-    <Dropdown displayAsMore={true} topBorder={true} xFromLeft={false} urls={[{text: "View Tickets", url:"/tickets", emphasis: "danger", form: {action: "?/close", method: "POST"}}, {text: "Join our Discord", url: "/"}]}/>
+    <Dropdown displayAsMore={true} topBorder={true} xFromLeft={false} urls={[{text: "Delete Ticket", emphasis: "danger", form: {action: "?/delete", method: "POST", enhance(result) {
+      goto("/tickets");
+    },}}]}/>
   </div>
 </div>
 
@@ -57,6 +67,7 @@
   formData.append("content", JSON.stringify(editor.getJSON()));
   formData.append("contentLength", textLength);
   formData.append("status", data.ticket.status);
+  formData.append("filesUpdated", `${filesUpdated}`);
   return async ({ result }) => {
       if((result.type == "success")){
         if(result.data?.success){
@@ -119,7 +130,7 @@
 			<button type="button" on:click={() => {
 				shootImageModal(data.ticket.attachments[i], file);
 			}} class="group grid place-items-center">
-       <svg xmlns="http://www.w3.org/2000/svg" class="absolute text-white z-10 hidden group-hover:block" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+       <svg xmlns="http://www.w3.org/2000/svg" class="absolute text-white hidden group-hover:block z-10" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
         <path d="M16 4l4 0l0 4"></path>
         <path d="M14 10l6 -6"></path>
