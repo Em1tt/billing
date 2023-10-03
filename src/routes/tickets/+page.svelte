@@ -127,6 +127,12 @@
 			checkboxes[i] = { id: ticket.id, checked: false };
 		});
 	}
+	async function handlePagination(){
+		const pageN = $page.url.searchParams.get("page");
+		$page.url.searchParams.set("page", pageN ? `${parseInt(pageN) + 1}` : "2");
+		await goto(`?${$page.url.searchParams.toString()}`, {invalidateAll: true});
+		await goto(`?${$page.url.searchParams.toString()}`, {invalidateAll: true});
+	}
 </script>
 
 <Breadcrumbs path={[{ text: 'Home', path: '/' }, { text: 'Tickets' }]} />
@@ -134,7 +140,7 @@
 {#if deleteModal}
 	<div
 		transition:fly={{ duration: 200, y: 10 }}
-		class="shadow fixed bottom-20 left-1/2 -translate-x-1/2 justify-between border border-slate-400/40 rounded-full w-96 flex items-center px-6 py-2"
+		class="shadow fixed bottom-20 left-1/2 -translate-x-1/2 justify-between border border-slate-400/40 bg-slate-200 rounded-full w-96 flex items-center px-6 py-2"
 	>
 		<p class="text-slate-600">
 			Selected <b>{checkboxes.filter((t) => t?.checked === true).length}</b>
@@ -144,7 +150,7 @@
 			form="ticketSelect"
 			type="submit"
 			on:click={deleteSelected}
-			class="p-2 cursor-pointer text-red-600 duration-100 hover:bg-red-400/20 px-4 rounded"
+			class="p-2 cursor-pointer text-red-600 duration-100 hover:bg-red-400/20 bg-red-400/10 px-4 rounded"
 			>Delete selected</button
 		>
 	</div>
@@ -166,7 +172,7 @@
 		>
 			<button
 				type="submit"
-				class="p-2 cursor-pointer text-sky-500 hover:bg-sky-400/20 rounded px-4"
+				class="p-2 cursor-pointer text-sky-500 hover:bg-sky-400/20 bg-sky-400/10 rounded px-4"
 			>
 				{#if loadingTicket}
 					<svg
@@ -416,7 +422,9 @@
 										/>
 									</svg>
 								{:else}
-									Load more ({data.tickets.totalItems - data.tickets.items.length})
+									<button on:click={ () => { handlePagination() } }>
+										Load more ({data.tickets.totalItems - data.tickets.items.length})
+									</button>
 								{/if}
 							</button>
 						</td>

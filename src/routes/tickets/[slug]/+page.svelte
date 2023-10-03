@@ -5,17 +5,25 @@
 	import type { Editor } from '@tiptap/core';
 	import { onMount } from 'svelte';
 	import Dropdown from '$lib/Dropdown.svelte';
-	import { invalidateAll } from '$app/navigation';
-
+	import { goto, invalidateAll } from '$app/navigation';
+	import { applyAction, enhance } from '$app/forms';
 	let FormatTextArea: any;
 	/** @type {import('./$types').PageData} */
 	export let data: any;
+	
+	let messages = data?.messages?.items;
+	let text: string;
+
+	$: if(data){
+		console.log("hi");
+		messages = data?.messages?.items;
+	};
 	const files = data.ticket.attachments.map((i: string) => `${PUBLIC_POCKETBASE_URL}${data.ticket.collectionId}/${data.ticket.id}/${i}?token=${data.token}`);
 	onMount(async () => {
 		FormatTextArea = (await import('$lib/FormatTextArea.svelte')).default;
 	});
 	var editor: Editor;
-
+	var messageEditor: Editor;
 </script>
 
 <Breadcrumbs
@@ -37,7 +45,7 @@
 
 <div class="w-full rounded mt-4">
 	<p class="text-slate-600 text-sm">Subject</p>
-	<p class="text-slate-600 font-bold mb-2">{data.ticket.subject || "Not Set"}</p>
+	<p class="text-slate-600 font-bold mb-2 text-lg">{data.ticket.subject || "Not Set"}</p>
 	<p class="mb-1 text-slate-600 text-sm">Details</p>
 	{#if FormatTextArea}
 		<svelte:component
@@ -118,8 +126,73 @@
 		<div class="flex flex-col flex-nowrap gap-1">
 			<p class="text-sm">Date Opened</p>
 			<div class="flex flex-col gap-0 font-bold">
-        <p class="leading-5">{new Date(data.ticket.created).toDateString()}, {new Date(data.ticket.created).toLocaleTimeString()}</p>
-      </div>
+        		<p class="leading-5">{new Date(data.ticket.created).toDateString()}, {new Date(data.ticket.created).toLocaleTimeString()}</p>
+      		</div>
 		</div>
 	</div>
+	<form class="mt-2" method="POST" action="?/sendMessage" use:enhance={({ formData }) => {
+			formData.append("content", JSON.stringify(messageEditor.getJSON()));
+			formData.append("ticket", data.ticket.id);
+			return async ({ result }) => {
+				await invalidateAll();
+				return applyAction(result);
+			}
+		}
+	}>
+		<p class="text-sm text-slate-600 mb-1">New Message</p>
+		{#if FormatTextArea}
+			<svelte:component
+				this={FormatTextArea}
+				editable={true}
+				bind:editor={messageEditor}
+				charLimit={2000}
+				compact={true}
+				bind:text
+			/>
+		{/if}
+		<fieldset class="mt-2 grid grid-cols-1 md:grid-cols-3">
+			<button
+				  type="submit"
+				  class="p-2 md:col-start-3 ml-auto cursor-pointer text-sky-600 hover:text-sky-800 hover:bg-sky-400/20 bg-sky-400/10 hover:border-sky-600 w-full rounded duration-100"
+			  >
+			  Send Message
+			</button>
+		  </fieldset>
+	</form>
+	{#if messages.length}
+	<div class="border border-slate-400/40 rounded p-2 mt-2 flex flex-col flex-nowrap gap-4">
+		{#key messages}
+			{#each messages as message}
+				<div class="flex flex-col flex-nowrap bg-slate-300/40 rounded p-1">
+					<div class="flex flex-row flex-nowrap items-center gap-2">
+						<svg aria-hidden="true" fill="none" class="w-12 text-slate-400/40" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+						</svg>
+						<div class="flex flex-row flex-nowrap justify-between text-slate-600 gap-2 pr-4 w-full">
+							<div class="flex flex-row flex-nowrap gap-2">
+								<p class="font-bold leading-4">{message.expand.author.name} <br> <span class="text-sm font-normal">Customer</span></p>
+								<p class="text-slate-400 leading-4">{new Date(message.created).toLocaleTimeString()}, {new Date(message.created).toDateString()}</p>
+							</div>
+							<div class="flex items-center relative">
+								<Dropdown displayAsMore={true} topBorder={true} xFromLeft={false} urls={[{text:"Delete Message", emphasis: "danger", form: {action: `?/deleteMessage&id=${message.id}`, method: "POST", async enhance(result) {
+									await invalidateAll();
+									applyAction(result);
+								},}}]}/>
+							</div>
+						</div>
+					</div>
+					{#if FormatTextArea}
+						<svelte:component
+							this={FormatTextArea}
+							editable={false}
+							border={false}
+							text={message.content || "Not Set"}
+							charLimit={2000}
+						/>
+					{/if}
+				</div>
+			{/each}
+		{/key}
+	</div>
+	{/if}
 </div>
