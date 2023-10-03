@@ -56,7 +56,7 @@
 </p>
 <div
 	bind:this={dropdown}
-	class="absolute border border-slate-400/40 py-1 bg-slate-200 z-50 {topBorder ? "rounded" : "border-t-0 rounded-b"} {xFromLeft ? "left-0" : "right-0"} w-fit -top-[2000px] focus-visible:top-10 focus:top-10 focus-within:top-10 peer-focus-visible:top-10 peer-focus:top-10 peer-focus-within:top-10"
+	class="absolute border border-slate-400/40 py-1 bg-slate-200 z-50 {topBorder ? "rounded" : "border-t-0 rounded-b"} {xFromLeft ? "left-0" : "right-0"} w-fit -top-[100000px] focus-visible:top-10 focus:top-10 focus-within:top-10 peer-focus-visible:top-10 peer-focus:top-10 peer-focus-within:top-10"
     aria-hidden="true"
 >
 	<ul class="leading-loose rotate-0">
