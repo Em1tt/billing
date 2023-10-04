@@ -22,7 +22,6 @@ export const actions: import('./$types').Actions = {
     const data = await request.formData();
     const content = data.get("content");
     const ticket = data.get("ticket");
-    console.log(content, ticket);
     try{
       await locals.pb.collection("tickets_messages").create({content, ticket, author: locals.pb.authStore.model?.id});
       await locals.pb.collection("tickets").update(params.slug, {status: 1});

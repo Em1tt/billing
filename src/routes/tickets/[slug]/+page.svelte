@@ -15,7 +15,6 @@
 	let text: string;
 
 	$: if(data){
-		console.log("hi");
 		messages = data?.messages?.items;
 	};
 	const files = data.ticket.attachments.map((i: string) => `${PUBLIC_POCKETBASE_URL}${data.ticket.collectionId}/${data.ticket.id}/${i}?token=${data.token}`);

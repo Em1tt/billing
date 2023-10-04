@@ -35,7 +35,6 @@ export const actions: import('./$types').Actions = {
         return {
             tickets: serializeNonPOJOs(tickets)
         }
-        console.log(page);
     }
 };
 /** @type {import('./$types').LayoutServerLoad} */

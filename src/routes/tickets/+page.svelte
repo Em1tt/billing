@@ -16,7 +16,6 @@
 	}
 
 	export let data;
-	console.log(data);
 	let  selectAll: boolean,
 		checkboxes: Array<{ id: string; checked: boolean }> = [],
 		   tickets: Ticket[],

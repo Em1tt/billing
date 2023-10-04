@@ -46,7 +46,6 @@
     filePreviews = [];
     filesUpdated = true;
   };
-  console.log("false")
   </script>
 
 <Breadcrumbs path={[{text: "Home", path: "/"}, {text: "Tickets", path: "/tickets"}, {text: data.ticket.id, path: `/tickets/${data.ticket.id}`}, {text: "Edit"}]} />
