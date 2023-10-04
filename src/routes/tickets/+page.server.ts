@@ -24,12 +24,24 @@ export const actions: import('./$types').Actions = {
             await locals.pb.collection("tickets").delete(data[i]);
         };
         return {success: true};
+    },
+    getMoreTickets: async({locals, request}) => {
+        const data = await request.formData()
+        const page = data.get("page")?.toString();
+        if(!page) return fail(400);
+        if(isNaN(parseInt(page))) return fail(400);
+        const tickets = await locals.pb.collection("tickets").getList(parseInt(page), 10, {expand: "category,priority", sort: "-created"});
+        if(!tickets.items.length) return fail(404);
+        return {
+            tickets: serializeNonPOJOs(tickets)
+        }
+        console.log(page);
     }
 };
 /** @type {import('./$types').LayoutServerLoad} */
 export async function load({locals, url}) {
     if(!locals.pb.authStore.isValid) throw redirect(302, "/login");
-    const tickets = await locals.pb.collection("tickets").getList(1, parseInt(url.searchParams.get("page") || "1") * 10 || 1 * 10, {expand: "category,priority", sort: "-created"});
+    const tickets = await locals.pb.collection("tickets").getList(1, 10, {expand: "category,priority", sort: "-created"});
     return {
         tickets: serializeNonPOJOs(tickets)
     }

@@ -9,6 +9,7 @@
 	import type { Record, ListResult } from 'pocketbase';
 	import type { MouseEventHandler } from 'svelte/elements';
 	import {browser} from "$app/environment"
+	import type { ActionResult } from '@sveltejs/kit';
 
 	interface Ticket extends Record {
 		expand: {[any: string]: Record};
@@ -16,13 +17,14 @@
 
 	export let data;
 	console.log(data);
-	let selectAll : boolean,
+	let  selectAll: boolean,
 		checkboxes: Array<{ id: string; checked: boolean }> = [],
 		   tickets: Ticket[],
 	 displayShadow: boolean = false,
 	  tableWrapper: HTMLElement,
 	 loadingTicket: boolean = false,
-	   deleteModal: boolean = false;
+	   deleteModal: boolean = false,
+	   		  pbPage: number = 1;
 
 	$: if(data){
 		const resultData: ListResult<Ticket> = data.tickets;
@@ -127,11 +129,12 @@
 			checkboxes[i] = { id: ticket.id, checked: false };
 		});
 	}
-	async function handlePagination(){
-		const pageN = $page.url.searchParams.get("page");
-		$page.url.searchParams.set("page", pageN ? `${parseInt(pageN) + 1}` : "2");
-		await goto(`?${$page.url.searchParams.toString()}`, {invalidateAll: true});
-		await goto(`?${$page.url.searchParams.toString()}`, {invalidateAll: true});
+	async function handleLoadingTickets(result: ActionResult<globalThis.Record<string, unknown> | undefined, globalThis.Record<string, unknown> | undefined>){
+		if(result.type != "success") return;
+		if(!result.data) return;
+		tickets = [...tickets, ...(result.data.tickets as any).items];
+		mapCheckboxes();
+		tickets.sort(tableSort);
 	}
 </script>
 
@@ -399,7 +402,7 @@
 						</td>
 					</tr>
 				{/if}
-				{#if data.tickets.page < data.tickets.totalPages}
+				{#if tickets.length < data.tickets.totalItems}
 					<tr>
 						<td class="text-center leading-10 py-2" colspan="7">
 							<button
@@ -422,9 +425,19 @@
 										/>
 									</svg>
 								{:else}
-									<button on:click={ () => { handlePagination() } }>
-										Load more ({data.tickets.totalItems - data.tickets.items.length})
-									</button>
+									<form action="?/getMoreTickets" method="post" use:enhance={({formData}) =>{
+										pbPage += 1;
+										formData.set("page", `${pbPage}`);
+										return async ({result}) => {
+											handleLoadingTickets(result);
+											
+											await applyAction(result);
+										}
+									}}>
+										<button type="submit">
+											Load more ({data.tickets.totalItems - tickets.length})
+										</button>
+									</form>
 								{/if}
 							</button>
 						</td>
