@@ -36,7 +36,6 @@
 	let element: HTMLElement;
 	export let editor: Editor;
 	export let charCount: number = 0;
-	console.log(text);
 	onMount(() => {
 		editor = new Editor({
 			editable,
