@@ -6,7 +6,7 @@
 	export let text: string = 'Dropdown';
 	export let xFromLeft: boolean = true;
 	export let topBorder: boolean = false;
-	export let urls: Array<{text: string, url?: string, emphasis?: "default" | "success" | "danger" | "warning", click?: () => void, form?: {method: "GET" | "POST" | "PUT" | "DELETE", action: string, enhance?: (result: ActionResult<Record<string, unknown> | undefined, Record<string, unknown> | undefined>) => void}}> = [];
+	export let urls: Array<{text: string, url?: string, emphasis?: "default" | "success" | "danger" | "warning", click?: () => void, divider?: boolean, form?: {method: "GET" | "POST" | "PUT" | "DELETE", action: string, enhance?: (result: ActionResult<Record<string, unknown> | undefined, Record<string, unknown> | undefined>) => void}}> = [];
 	export let displayAsMore: boolean = false;
 	let dropdownEl: HTMLElement;
 	let dropdown: HTMLElement;
@@ -76,6 +76,8 @@
 					{link.text}
 				</button>
 			</form>
+			{:else if link.divider}
+				<hr class="border-t border-slate-400/40 mx-2 my-1">
 			{:else}
 			<a href={link.url} class="w-40 block px-2">
 				{link.text}

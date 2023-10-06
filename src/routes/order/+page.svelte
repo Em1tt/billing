@@ -1,7 +1,14 @@
 <script lang="ts">
 	import Breadcrumbs from "$lib/Breadcrumbs.svelte";
-
-
+    import type { Record } from "pocketbase";
+    export let data;
+    let products: Record[],
+        pinned: Record[];
+    console.log(data);
+    $: if(data){
+        products = data.products.items.filter(i => !i.pinned);
+        pinned = data.products.items.filter(i => i.pinned);
+    };
 </script>
 
 <Breadcrumbs
@@ -16,7 +23,7 @@
         Order a service
 	</h1>
 </div>
-
+ {#if pinned.length}
 <div class="flex flex-col">
     <h2 class="text-xl font-bold text-slate-600 mt-4 flex flex-row items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pinned-filled rotate-45" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -25,32 +32,45 @@
          </svg>
         Pinned
     </h2>
-    <div class="grid grid-cols-3 gap-2 mt-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-2 mt-4">
+        {#each Array(3) as n,col}
         <div class="flex flex-col gap-2 h-fit">
-            <a href="/" class="bg-slate-300 hover:bg-slate-300/75 rounded w-full h-full p-4 relative">
-                <h2 class="text-lg font-bold text-slate-600">Minecraft Servers</h2>
-                <p class="text-slate-500">Some description that makes you want to buy this server idk</p>
-                <div class="flex items-center justify-between mt-4">
-                    <p class="text-slate-600">Starting @ 0.75/GB</p>
-                </div>
-            </a>
+            {#each pinned as pin, i}
+                {#if i % 3 == col}
+                    <a href="/order/{pin.slugReference}" class="bg-slate-300 hover:bg-slate-300/75 rounded w-full h-full p-4 relative">
+                        <h2 class="text-lg font-bold text-slate-600">{pin.name}</h2>
+                        <p class="text-slate-500">{pin.description}</p>
+                        <div class="flex items-center justify-between mt-4">
+                            <p class="text-slate-600">Starting @ 0.75/GB</p>
+                        </div>
+                    </a>
+                {/if}
+            {/each}
         </div>
+        {/each}
+    </div>
+</div>
+{/if}
+
+<div class="flex flex-col mt-4">
+    <h2 class="text-xl font-bold text-slate-600 mt-4 flex flex-row items-center gap-2">
+        All Services
+    </h2>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-2 mt-4">
+        {#each Array(3) as n,col}
         <div class="flex flex-col gap-2 h-fit">
-            <a href="/" class="bg-slate-300 hover:bg-slate-300/75 rounded w-full h-full p-4 relative">
-                <h2 class="text-lg font-bold text-slate-600">Minecraft Servers</h2>
-                <div class="flex items-center justify-between mt-4">
-                    <p class="text-slate-600">Starting @ 0.75/GB</p>
-                </div>
-            </a>
+            {#each products as product, i}
+                {#if i % 3 == col}
+                    <a href="/order/{product.slugReference}" class="bg-slate-300 hover:bg-slate-300/75 rounded w-full h-full p-4 relative">
+                        <h2 class="text-lg font-bold text-slate-600">{product.name}</h2>
+                        <p class="text-slate-500">{product.description}</p>
+                        <div class="flex items-center justify-between mt-4">
+                            <p class="text-slate-600">Starting @ 0.75/GB</p>
+                        </div>
+                    </a>
+                {/if}
+            {/each}
         </div>
-        <div class="flex flex-col gap-2 h-fit">
-            <a href="/" class="bg-slate-300 hover:bg-slate-300/75 rounded w-full h-full p-4 relative">
-                <h2 class="text-lg font-bold text-slate-600">Minecraft Servers</h2>
-                <p class="text-slate-500">Some description that makes you want to buy this server idk</p>
-                <div class="flex items-center justify-between mt-4">
-                    <p class="text-slate-600">Starting @ 0.75/GB</p>
-                </div>
-            </a>
-        </div>
+        {/each}
     </div>
 </div>

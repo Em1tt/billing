@@ -17,7 +17,7 @@
 			<ul class="flex flex-row items-center gap-6 text-slate-600">
 				<li><a href="/" class="hover:text-slate-800">Home</a></li>
 				<li class="relative">
-					<Dropdown text="Order" urls={[{text: "Minecraft Servers", url:"/"}]}/>
+					<Dropdown text="Shop" urls={[{text: "Browse All", url: "/order"}, {text: "", divider: true}, {text: "Minecraft Servers", url:"/"}]}/>
 				</li>
 				<li class="relative">
 					<Dropdown text="Support" urls={[{text:"View Tickets", url: "/tickets"}, {text:"Join our Discord", url: "/"}, {text: "Knowledgebase", url: "/"}]}/>
